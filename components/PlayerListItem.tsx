@@ -1,13 +1,42 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import { Player } from "../types";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { myFormationState, myPlayersState } from "../atoms/MyTeam";
 
 interface Props {
   player: Player;
 }
 const PlayerListItem = ({ player }: Props) => {
+  const [myPlayers, setMyPlayers] = useRecoilState(myPlayersState);
+  const myFormation = useRecoilValue(myFormationState);
+
+  const numberOfPlayersOnPos = myPlayers.filter(
+    (p) => p.position == player.position
+  ).length;
+
+  const onPress = () => {
+    setMyPlayers((curPlayers) => {
+      if (curPlayers.some((p) => p.id == player.id)) {
+        return curPlayers.filter((p) => p.id != player.id);
+      }
+      if (numberOfPlayersOnPos < myFormation[player.position]) {
+        return [...curPlayers, player];
+      }
+      return curPlayers;
+    });
+  };
+
+  const isSelected = myPlayers.some((p) => p.id == player.id);
+
   return (
-    <View style={styles.container}>
+    <Pressable
+      onPress={onPress}
+      style={[
+        styles.container,
+        { backgroundColor: isSelected ? "#d170db" : "white" },
+      ]}
+    >
       <Image
         source={{
           uri: `https://media.api-sports.io/football/players/${player.id}.png`,
@@ -25,7 +54,7 @@ const PlayerListItem = ({ player }: Props) => {
         <Text>{player.position}</Text>
       </View>
       <Text style={styles.points}>{player.totalPoints} </Text>
-    </View>
+    </Pressable>
   );
 };
 

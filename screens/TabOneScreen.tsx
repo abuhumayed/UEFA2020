@@ -1,10 +1,9 @@
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import React, { useRef } from "react";
 import { StyleSheet, SafeAreaView, Pressable, Text, View } from "react-native";
-import { players } from "../assets/data/players";
 import Field from "../components/Field";
 import Filters from "../components/Filters";
-import PlayerListItem from "../components/PlayerListItem";
+import PlayersList from "../components/PlayersList";
 import TeamStats from "../components/TeamStats";
 
 export default function TabOneScreen() {
@@ -35,10 +34,7 @@ export default function TabOneScreen() {
         >
           <Text>Filters</Text>
         </Pressable>
-        <BottomSheetFlatList
-          data={players}
-          renderItem={({ item }) => <PlayerListItem player={item} />}
-        />
+        <PlayersList />
       </BottomSheet>
       <BottomSheet ref={filterBottomSheet} index={0} snapPoints={snapPoints}>
         <Filters />
